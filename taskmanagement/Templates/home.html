@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+
+<div class="container mt-5">
+        <div class="">
+            <h3 class=" fw-bold p-2 text-center text-white bg-primary">Task Details</h3>
+           
+                  <div class="d-flex justify-content-end">
+    <button class="btn btn-danger">
+        <a class="nav-link text-white" href="{% url 'logout' %}">Logout</a>
+    </button>
+</div>
+
+                   
+            
+            <div class="container">
+                <table class="table table-striped fw-bold">
+                    <thead>
+                      <tr>
+                        <th scope="col">id</th>
+                        <th scope="col">title</th>
+                        <th scope="col">description </th>
+                        <th scope="col">due_date</th>
+                        <th scope="col">status</th>
+                        <th scope="col">completion_report</th>
+                        <th scope="col">worked_hours</th>
+                      </tr>
+                    </thead>
+                    {% for i in insert %}
+                
+                      <tr>
+                        <th scope="row">{{i.id}}</th>
+                        <td>{{i.title}}</td>
+                        <td>{{i.description}}</td>
+                        <td>{{i.due_date }}</td>
+                        <td>{{i.status}}</td>
+                        <td>{{i.completion_report}}</td>
+                        <td>{{i.worked_hours}}</td>
+                        <td><button class="bg-success"><a class="nav-link text-white" href="{% url 'view' i.id %}">View</a></button></td>
+                        <td><button class="bg-primary"><a class="nav-link text-white" href="{% url 'edit' i.id %}">Edit</a></button></td>
+                      
+                        
+                      </tr>
+                      {% endfor %}
+                  </table>
+
+
+    
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+<div class="container mt-auto mb-auto">
+<div class="card text-bg-danger mb-3 mt-5 fw-bold text-dark" style="max-width: 81rem;">
+    <div class="card-header bg-primary"><h2>{{ task.title }}</h2></div>
+    <div class="card-body">
+      <h5 class="card-title">task: {{ task.title }}</h5>
+      <h5 class="card-title">about: {{ task.description}}</h5>
+      <h5 class="card-title">due_date: {{ task.due_date }}</h5>
+      <h5 class="card-title">staus: {{ task.status}}</h5>
+      <h5 class="card-title">report: {{ task.completion_report}}</h5>
+      <h5 class="card-title">time: {{ task.worked_hours }}</h5>
+    </div>
+</div>
+{% endblock %}
