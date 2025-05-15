@@ -13,9 +13,13 @@ from rest_framework import status
 import re
 from rest_framework_simplejwt.tokens import RefreshToken
 from .serializers import UserSerializer
+from .serializers1 import TaskReportSerializer
+from .serializer2 import TaskSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.exceptions import TokenError
+from rest_framework import viewsets
+
 # Create your views here.
 
 
@@ -162,7 +166,9 @@ class RegisterView(APIView):
             "user": UserSerializer(user).data,
             "tokens": tokens,
         }, status=status.HTTP_201_CREATED)
+        
 
+        
 class LoginView(APIView):
     def post(self, request):
         username = request.data.get('username')
@@ -208,3 +214,63 @@ class TokenRefreshView(APIView):
                 return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
             except Exception as e:
                 return Response({"error": "An unexpected error occurred"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            
+            
+class UserTasksView(APIView):
+    
+
+    def get(self, request):
+        user = request.user
+        # Assuming Task has 'owner' as ForeignKey to Customer
+        tasks = Task.objects.filter(owner=user.customer_profile)
+        # You should create a serializer to represent tasks
+        serializer = TaskSerializer(tasks, many=True)  # Create TaskSerializer if not already
+        return Response(serializer.data)
+
+
+class UpdateTaskStatusView(APIView):
+   
+
+    def put(self, request, id):
+        user = request.user
+        task = get_object_or_404(Task, pk=id, owner=user.customer_profile)
+
+        # Extract fields from request.data
+        status_update = request.data.get('status')
+        completion_report = request.data.get('completion_report')
+        worked_hours = request.data.get('worked_hours')
+
+        # Validate that if status is 'Completed', report and hours must be provided
+        if status_update == 'Completed':
+            if not completion_report or not worked_hours:
+                return Response(
+                    {"error": "Completion Report and Worked Hours are required when marking task as Completed."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            task.status = status_update
+            task.completion_report = completion_report
+            task.worked_hours = worked_hours
+        else:
+            # If not completed, only update status
+            task.status = status_update
+
+        task.save()
+        return Response({"message": "Task updated successfully."}, status=status.HTTP_200_OK)
+
+
+class TaskReportView(APIView):
+   
+
+    def get(self, request, id):
+        user = request.user
+        if not (user.is_staff or user.is_superuser):
+            return Response({"error": "You do not have permission to view this report."}, status=status.HTTP_403_FORBIDDEN)
+
+        task = get_object_or_404(Task, pk=id)
+
+        if task.status != 'Completed':
+            return Response({"error": "Report is available only for completed tasks."}, status=status.HTTP_400_BAD_REQUEST)
+
+        serializer = TaskReportSerializer(task)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+            

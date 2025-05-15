@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views
-from .views import RegisterView, LoginView, ProtectedView, LogoutView, TokenRefreshView
+from .views import RegisterView, LoginView, ProtectedView, LogoutView, TokenRefreshView, UserTasksView, UpdateTaskStatusView, TaskReportView
 
 urlpatterns = [
     path('',views.login,name='login'),
@@ -17,5 +17,8 @@ urlpatterns = [
     path('logoutapi/', LogoutView.as_view(), name='logout'),
     path('protected/', ProtectedView.as_view(), name='protected'),
     path('refreshtoken/', TokenRefreshView.as_view(), name='refreshtoken'),
+    path('tasks/', UserTasksView.as_view(), name='user_tasks'),
+    path('tasks/<int:id>/', UpdateTaskStatusView.as_view(), name='update_task_status'),
+    path('tasks/<int:id>/report/', TaskReportView.as_view(), name='task_report'),
 ]
 
