@@ -21,7 +21,7 @@ class Task(models.Model):
         ('In Progress', 'In Progress'),
         ('Completed', 'Completed'),
     ]
-    owner = models.ForeignKey(Customer,on_delete=models.SET_NULL,null=True,related_name='bookings')
+    owner = models.ForeignKey(User,on_delete=models.SET_NULL,null=True,related_name='bookings')
     title = models.CharField(max_length=255)
     description = models.TextField()
     assigned_to = models.ForeignKey(User, on_delete=models.CASCADE, related_name='tasks')

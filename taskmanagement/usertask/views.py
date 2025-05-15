@@ -217,23 +217,21 @@ class TokenRefreshView(APIView):
             
             
 class UserTasksView(APIView):
-    
+    permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        user = request.user
-        # Assuming Task has 'owner' as ForeignKey to Customer
-        tasks = Task.objects.filter(owner=user.customer_profile)
-        # You should create a serializer to represent tasks
-        serializer = TaskSerializer(tasks, many=True)  # Create TaskSerializer if not already
-        return Response(serializer.data)
+        user = request.user  # Using Django User directly
+        tasks = Task.objects.filter(owner=user)
+        serializer = TaskSerializer(tasks, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class UpdateTaskStatusView(APIView):
    
-
+    permission_classes = [IsAuthenticated]
     def put(self, request, id):
         user = request.user
-        task = get_object_or_404(Task, pk=id, owner=user.customer_profile)
+        task = get_object_or_404(Task, pk=id, owner=user)
 
         # Extract fields from request.data
         status_update = request.data.get('status')
@@ -253,6 +251,7 @@ class UpdateTaskStatusView(APIView):
         else:
             # If not completed, only update status
             task.status = status_update
+            
 
         task.save()
         return Response({"message": "Task updated successfully."}, status=status.HTTP_200_OK)
@@ -260,7 +259,7 @@ class UpdateTaskStatusView(APIView):
 
 class TaskReportView(APIView):
    
-
+    permission_classes = [IsAuthenticated]
     def get(self, request, id):
         user = request.user
         if not (user.is_staff or user.is_superuser):
@@ -268,9 +267,7 @@ class TaskReportView(APIView):
 
         task = get_object_or_404(Task, pk=id)
 
-        if task.status != 'Completed':
-            return Response({"error": "Report is available only for completed tasks."}, status=status.HTTP_400_BAD_REQUEST)
 
-        serializer = TaskReportSerializer(task)
+        serializer = TaskSerializer(task)
         return Response(serializer.data, status=status.HTTP_200_OK)
             
