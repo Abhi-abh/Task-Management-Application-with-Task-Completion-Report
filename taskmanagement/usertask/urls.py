@@ -13,8 +13,8 @@ urlpatterns = [
     path('view/<int:id>/',views.views_page,name='view'),
     path('logout/',views.loggout,name='logout'),
     path('register/', RegisterView.as_view(), name='register'),
-    path('login/', LoginView.as_view(), name='login'),
-    path('logout/', LogoutView.as_view(), name='logout'),
+    path('loginapi/', LoginView.as_view(), name='login'),
+    path('logoutapi/', LogoutView.as_view(), name='logout'),
     path('protected/', ProtectedView.as_view(), name='protected'),
     path('refreshtoken/', TokenRefreshView.as_view(), name='refreshtoken'),
 ]
