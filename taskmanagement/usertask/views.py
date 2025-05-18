@@ -1,7 +1,6 @@
 from django.shortcuts import render,HttpResponse,get_object_or_404
 from .models import Task,Customer
-from .form import insert_form
-from .form1 import TaskForm
+from .form import insert_form,TaskForm
 from django.contrib.auth import authenticate, login as auth_login,logout
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
@@ -12,9 +11,7 @@ from rest_framework.response import Response
 from rest_framework import status
 import re
 from rest_framework_simplejwt.tokens import RefreshToken
-from .serializers import UserSerializer
-from .serializers1 import TaskReportSerializer
-from .serializer2 import TaskSerializer
+from .serializers import UserSerializer,TaskReportSerializer,TaskSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.exceptions import TokenError
